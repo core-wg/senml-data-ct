@@ -3,7 +3,7 @@
 This is the working area for the IETF [CORE Working Group](https://datatracker.ietf.org/wg/core/documents/) Internet-Draft, "SenML Data Value Content-Format Indication".
 
 * [Editor's Copy](https://core-wg.github.io/senml-data-ct/#go.draft-ietf-core-senml-data-ct.html)
-* [Working Group Draft](https://tools.ietf.org/html/draft-ietf-core-senml-data-ct)
+* [Working Group Draft](https://tools.ietf.org/html/draft-ietf-core-senml-data-ct) [![Build Status](https://travis-ci.org/core-wg/senml-data-ct.svg?branch=master)](https://travis-ci.org/core-wg/senml-data-ct)
 * [Compare Editor's Copy to Working Group Draft](https://core-wg.github.io/senml-data-ct/#go.draft-ietf-core-senml-data-ct.diff)
 
 ## Building the Draft
