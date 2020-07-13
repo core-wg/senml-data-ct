@@ -31,7 +31,7 @@ author:
 -
   ins: C. Bormann
   name: Carsten Bormann
-  org: Universitaet Bremen TZI
+  org: Universität Bremen TZI
   street: Postfach 330440
   city: Bremen
   code: D-28359
@@ -186,12 +186,15 @@ Content-Format indication as per {{tbl-senml-reg}}:
 | Content-Format      | ct    | String    | string   | RFC-AAAA  |
 {: #tbl-senml-reg cols='r l l' title="IANA Registration for new SenML Labels"}
 
+--- back
 
 # Acknowledgements {#acks}
 {: numbered="no"}
 
 The authors would like to thank Sergio Abreu for the discussions leading
-to the design of this extension and Isaac Rivera for reviews and feedback.
+to the design of this extension and Isaac Rivera for reviews and
+feedback.
+Klaus Hartke suggested not burdening this draft with a separate
+mandatory-to-implement version of the fields.
 
 
---- back
