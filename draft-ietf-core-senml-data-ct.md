@@ -149,25 +149,6 @@ field is performed by adding its value with the label "ct" to all Records
 in this range that carry a "vd" field but do not already contain a
 Content-Format ("ct") field.
 
-# Mandatory to Understand Content-Format
-
-If the Content-Format field needs to be understood by all processors of
-the SenML Pack, the mandatory to understand versions of the fields, "ct_"
-and "bct_", can be used. These fields have identical semantics to the
-"ct" and "bct" fields respectively except that a SenML processor that
-does not support this specification would reject a SenML Pack with such
-fields and generate an error (see Section 4.4 of {{RFC8428}}).
-
-Using the regular Content-Format indication enables to use this extension
-in a backward compatible way to indicate information that is not critical
-to be understood. The choice between the two methods is application
-dependent.
-
-If both a "ct_" field and a "ct" field are present in a resolved Record
-(i.e., from fields in the Record or from base fields), the "ct_" field
-overrides the "ct" field.  Using both "ct" and "ct_" in the same Record
-is NOT RECOMMENDED as it MAY be treated as an error by the recipient.
-
 # Examples
 
 The following examples are valid values for the "ct" and "bct" fields
