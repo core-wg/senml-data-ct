@@ -20,8 +20,8 @@ title: SenML Data Value Content-Format Indication
 abbrev: SenML Data Value Content-Format Indication
 date: 2020
 author:
-- ins: A. Keranen
-  name: Ari Keranen
+- ins: A. Keränen
+  name: Ari Keränen
   org: Ericsson
   street: ''
   city: Jorvas
