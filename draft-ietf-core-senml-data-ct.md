@@ -41,6 +41,8 @@ author:
 
 normative:
   IANA.senml:
+informative:
+  I-D.bormann-core-media-content-type-format: mtct
 
 --- abstract
 
@@ -56,7 +58,7 @@ data.
 # Introduction {#intro}
 
 The Sensor Measurement Lists (SenML) media type {{!RFC8428}} can be used
-to send various different kinds of data.  In the example given in
+to send various kinds of data.  In the example given in
 {{ex-1}}, a temperature value, an indication whether a lock is open, and
 a data value (with SenML field "vd") read from an NFC reader is sent in a
 single SenML pack.
@@ -89,7 +91,7 @@ in the Content-Formats subregistry of the CoRE Parameters registry
 {: #ex-2 title="SenML Record with binary data identified as CBOR"}
 
 In this example SenML Record the data value contains a string "foo" and a
-number 42 encoded in a CBOR {{!RFC7049}} array. Since the example above
+number 42 encoded in a CBOR {{?RFC7049}} array. Since the example above
 uses the JSON format of SenML, the data value containing the binary CBOR
 value is base64-encoded. The data value after base64 decoding is shown
 with CBOR diagnostic notation in {{ex-2-cbor}}.
@@ -108,18 +110,21 @@ with CBOR diagnostic notation in {{ex-2-cbor}}.
 
 Readers should also be familiar with the terms and concepts discussed in
 {{RFC8428}}. Awareness of terminology issues discussed in
-{{?I-D.bormann-core-media-content-type-format}} can also be very helpful.
+{{-mtct}} can also be very helpful.
 
 # SenML Content-Format ("ct") Field
 
 When a SenML Record contains a Data Value field ("vd"), the Record MAY
-also include a Content-Format indication field.  The Content-Format
-indication uses label "ct" and a string value with either a CoAP
-Content-Format identifier in decimal form with no leading zeros except
-for the value "0" itself (representing an unsigned integer in the
-range of 0-65535, similar to the CoRE Link Format {{?RFC6690}} "ct"
-attribute) or with a string containing a Content-Type and optionally a
-Content-Coding (see below).
+also include a Content-Format indication field, using label "ct".  The
+value of this field is a string value, one of:
+
+* a CoAP Content-Format identifier in decimal form with no leading
+  zeros (except for the value "0" itself).  This value represents an
+  unsigned integer in the range of 0-65535, similar to the CoRE Link
+  Format {{?RFC6690}} "ct" attribute).
+
+* or a Content-Format-String {{-mtct}} containing a Content-Type and
+  optionally a Content-Coding (see below).
 
 The CoAP Content-Format identifier provides a simple and efficient way
 to indicate the type of the data.  Since some Internet media types and
@@ -132,11 +137,11 @@ identifier.
 
 To indicate that a Content-Coding is used with a Content-Type, the
 Content-Coding value (e.g., "deflate" {{?RFC7230}}) is appended to the
-Content Type (media type and parameters, if any), separated by a "@"
-sign.  For example: "text/plain; charset=utf-8@deflate".  If
-Content-Coding is not specified with a Content-Type (no "@" sign is
-present outside any media type parameters), the identity (i.e., no)
-transformation is used.
+Content-Type value (media type and parameters, if any), separated by a "@"
+sign.  For example: "text/plain; charset=utf-8@deflate".  If no "@" sign is
+present outside the media type parameters, the Content-Coding is not
+specified and the "identity" Content-Coding is used -- no
+encoding transformation is employed.
 
 # SenML Base Content-Format ("bct") Field
 
@@ -171,6 +176,8 @@ application from properly checking its inputs.
 Also, the ability for an attacker to supply crafted SenML data that
 specify media types chosen by the attacker may expose vulnerabilities
 of handlers for these media types to the attacker.
+This includes "decompression bombs", compressed data that is crafted
+to decompress to extremely large data items.
 
 # IANA Considerations {#iana}
 
@@ -196,5 +203,5 @@ to the design of this extension and Isaac Rivera for reviews and
 feedback.
 Klaus Hartke suggested not burdening this draft with a separate
 mandatory-to-implement version of the fields.
-
-
+Alexey Melnikov, Jim Schaad, and Thomas Fossati provided helpful
+comments at Working-Group last call.
