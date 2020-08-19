@@ -5,8 +5,8 @@
 Network Working Group                                         A. Keränen
 Internet-Draft                                                  Ericsson
 Intended status: Standards Track                              C. Bormann
-Expires: 14 January 2021                          Universität Bremen TZI
-                                                            13 July 2020
+Expires: 20 February 2021                         Universität Bremen TZI
+                                                          19 August 2020
 
 
                SenML Data Value Content-Format Indication
@@ -48,14 +48,14 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 14 January 2021.
+   This Internet-Draft will expire on 20 February 2021.
 
 
 
 
-Keränen & Bormann        Expires 14 January 2021                [Page 1]
+Keränen & Bormann       Expires 20 February 2021                [Page 1]
 
-Internet-Draft SenML Data Value Content-Format Indication      July 2020
+Internet-Draft SenML Data Value Content-Format Indication    August 2020
 
 
 Copyright Notice
@@ -84,16 +84,16 @@ Table of Contents
    8.  References  . . . . . . . . . . . . . . . . . . . . . . . . .   5
      8.1.  Normative References  . . . . . . . . . . . . . . . . . .   5
      8.2.  Informative References  . . . . . . . . . . . . . . . . .   6
-   Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .   6
+   Acknowledgements  . . . . . . . . . . . . . . . . . . . . . . . .   7
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   7
 
 1.  Introduction
 
    The Sensor Measurement Lists (SenML) media type [RFC8428] can be used
-   to send various different kinds of data.  In the example given in
-   Figure 1, a temperature value, an indication whether a lock is open,
-   and a data value (with SenML field "vd") read from an NFC reader is
-   sent in a single SenML pack.
+   to send various kinds of data.  In the example given in Figure 1, a
+   temperature value, an indication whether a lock is open, and a data
+   value (with SenML field "vd") read from an NFC reader is sent in a
+   single SenML pack.
 
    [
      {"bn":"urn:dev:ow:10e2073a01080063:","n":"temp","u":"Cel","v":7.1},
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Keränen & Bormann        Expires 14 January 2021                [Page 2]
+Keränen & Bormann       Expires 20 February 2021                [Page 2]
 
-Internet-Draft SenML Data Value Content-Format Indication      July 2020
+Internet-Draft SenML Data Value Content-Format Indication    August 2020
 
 
    not always be easily available to entities processing the SenML pack.
@@ -157,21 +157,27 @@ Internet-Draft SenML Data Value Content-Format Indication      July 2020
 3.  SenML Content-Format ("ct") Field
 
    When a SenML Record contains a Data Value field ("vd"), the Record
-   MAY also include a Content-Format indication field.  The Content-
-   Format indication uses label "ct" and a string value with either a
-   CoAP Content-Format identifier in decimal form with no leading zeros
-   except for the value "0" itself (representing an unsigned integer in
-   the range of 0-65535, similar to the CoRE Link Format [RFC6690] "ct"
+   MAY also include a Content-Format indication field, using label "ct".
+   The value of this field is a string value, one of:
 
 
 
-Keränen & Bormann        Expires 14 January 2021                [Page 3]
+
+
+
+Keränen & Bormann       Expires 20 February 2021                [Page 3]
 
-Internet-Draft SenML Data Value Content-Format Indication      July 2020
+Internet-Draft SenML Data Value Content-Format Indication    August 2020
 
 
-   attribute) or with a string containing a Content-Type and optionally
-   a Content-Coding (see below).
+   *  a CoAP Content-Format identifier in decimal form with no leading
+      zeros (except for the value "0" itself).  This value represents an
+      unsigned integer in the range of 0-65535, similar to the CoRE Link
+      Format [RFC6690] "ct" attribute).
+
+   *  or a Content-Format-String
+      [I-D.bormann-core-media-content-type-format] containing a Content-
+      Type and optionally a Content-Coding (see below).
 
    The CoAP Content-Format identifier provides a simple and efficient
    way to indicate the type of the data.  Since some Internet media
@@ -184,11 +190,11 @@ Internet-Draft SenML Data Value Content-Format Indication      July 2020
 
    To indicate that a Content-Coding is used with a Content-Type, the
    Content-Coding value (e.g., "deflate" [RFC7230]) is appended to the
-   Content Type (media type and parameters, if any), separated by a "@"
-   sign.  For example: "text/plain; charset=utf-8@deflate".  If Content-
-   Coding is not specified with a Content-Type (no "@" sign is present
-   outside any media type parameters), the identity (i.e., no)
-   transformation is used.
+   Content-Type value (media type and parameters, if any), separated by
+   a "@" sign.  For example: "text/plain; charset=utf-8@deflate".  If no
+   "@" sign is present outside the media type parameters, the Content-
+   Coding is not specified and the "identity" Content-Coding is used -
+   no encoding transformation is employed.
 
 4.  SenML Base Content-Format ("bct") Field
 
@@ -211,20 +217,21 @@ Internet-Draft SenML Data Value Content-Format Indication      July 2020
    *  "0" (CoAP Content-Format for "text/plain" with parameter
       "charset=utf-8")
 
+
+
+
+
+Keränen & Bormann       Expires 20 February 2021                [Page 4]
+
+Internet-Draft SenML Data Value Content-Format Indication    August 2020
+
+
    *  "application/json" (JSON Content-Type - equivalent to "50" CoAP
       Content-Format identifier)
 
    *  "application/json@deflate" (JSON Content-Type with "deflate" as
       Content-Coding - equivalent to "11050" CoAP Content-Format
       identifier)
-
-
-
-
-Keränen & Bormann        Expires 14 January 2021                [Page 4]
-
-Internet-Draft SenML Data Value Content-Format Indication      July 2020
-
 
    *  "text/csv" (Comma-Separated Values (CSV) [RFC4180] Content-Type)
 
@@ -236,7 +243,9 @@ Internet-Draft SenML Data Value Content-Format Indication      July 2020
    consuming application from properly checking its inputs.  Also, the
    ability for an attacker to supply crafted SenML data that specify
    media types chosen by the attacker may expose vulnerabilities of
-   handlers for these media types to the attacker.
+   handlers for these media types to the attacker.  This includes
+   "decompression bombs", compressed data that is crafted to decompress
+   to extremely large data items.
 
 7.  IANA Considerations
 
@@ -265,22 +274,18 @@ Internet-Draft SenML Data Value Content-Format Indication      July 2020
               IANA, "Sensor Measurement Lists (SenML)",
               <http://www.iana.org/assignments/senml>.
 
+
+
+
+Keränen & Bormann       Expires 20 February 2021                [Page 5]
+
+Internet-Draft SenML Data Value Content-Format Indication    August 2020
+
+
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
-
-   [RFC7049]  Bormann, C. and P. Hoffman, "Concise Binary Object
-              Representation (CBOR)", RFC 7049, DOI 10.17487/RFC7049,
-              October 2013, <https://www.rfc-editor.org/info/rfc7049>.
-
-
-
-
-Keränen & Bormann        Expires 14 January 2021                [Page 5]
-
-Internet-Draft SenML Data Value Content-Format Indication      July 2020
-
 
    [RFC7252]  Shelby, Z., Hartke, K., and C. Bormann, "The Constrained
               Application Protocol (CoAP)", RFC 7252,
@@ -319,6 +324,20 @@ Internet-Draft SenML Data Value Content-Format Indication      July 2020
               Format", RFC 6690, DOI 10.17487/RFC6690, August 2012,
               <https://www.rfc-editor.org/info/rfc6690>.
 
+   [RFC7049]  Bormann, C. and P. Hoffman, "Concise Binary Object
+              Representation (CBOR)", RFC 7049, DOI 10.17487/RFC7049,
+              October 2013, <https://www.rfc-editor.org/info/rfc7049>.
+
+
+
+
+
+
+Keränen & Bormann       Expires 20 February 2021                [Page 6]
+
+Internet-Draft SenML Data Value Content-Format Indication    August 2020
+
+
    [RFC7230]  Fielding, R., Ed. and J. Reschke, Ed., "Hypertext Transfer
               Protocol (HTTP/1.1): Message Syntax and Routing",
               RFC 7230, DOI 10.17487/RFC7230, June 2014,
@@ -329,14 +348,9 @@ Acknowledgements
    The authors would like to thank Sergio Abreu for the discussions
    leading to the design of this extension and Isaac Rivera for reviews
    and feedback.  Klaus Hartke suggested not burdening this draft with a
-   separate mandatory-to-implement version of the fields.
-
-
-
-Keränen & Bormann        Expires 14 January 2021                [Page 6]
-
-Internet-Draft SenML Data Value Content-Format Indication      July 2020
-
+   separate mandatory-to-implement version of the fields.  Alexey
+   Melnikov, Jim Schaad, and Thomas Fossati provided helpful comments at
+   Working-Group last call.
 
 Authors' Addresses
 
@@ -375,18 +389,4 @@ Authors' Addresses
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Keränen & Bormann        Expires 14 January 2021                [Page 7]
+Keränen & Bormann       Expires 20 February 2021                [Page 7]
