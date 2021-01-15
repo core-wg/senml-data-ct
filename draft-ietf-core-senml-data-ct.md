@@ -18,7 +18,7 @@ pi:
   subcompact: 'no'
 title: SenML Data Value Content-Format Indication
 abbrev: SenML Data Value Content-Format Indication
-date: 2020
+date: 2021
 author:
 - ins: A. Keränen
   name: Ari Keränen
@@ -41,14 +41,16 @@ author:
 
 normative:
   IANA.senml:
+  RFC7252: coap
 informative:
   I-D.bormann-core-media-content-type-format: mtct
+  RFC8949: cbor
 
 --- abstract
 
 The Sensor Measurement Lists (SenML) media type supports multiple types
 of values, from numbers to text strings and arbitrary binary data values.
-In order to simplify processing of the data values this document proposes
+In order to simplify processing of the data values, this document proposes
 to specify a new SenML field for indicating the Content-Format of the
 data.
 
@@ -78,9 +80,9 @@ knowledge of the application. However, this context may not always be
 easily available to entities processing the SenML pack. To facilitate
 automatic interpretation it is useful to be able to indicate an Internet
 media type and content-coding right in the SenML Record. The CoAP
-Content-Format (Section 12.3 in {{!RFC7252}}) provides just this
+Content-Format (Section 12.3 in {{-coap}}) provides just this
 information; enclosing a Content-Format number (in this case number 60 as
-defined for content-type application/cbor in {{RFC7049}}) in the Record is
+defined for content-type application/cbor in {{-cbor}}) in the Record is
 illustrated in {{ex-2}}. All registered CoAP Content-Formats are listed
 in the Content-Formats subregistry of the CoRE Parameters registry
 {{?IANA.core-parameters}}.
@@ -91,7 +93,7 @@ in the Content-Formats subregistry of the CoRE Parameters registry
 {: #ex-2 title="SenML Record with binary data identified as CBOR"}
 
 In this example SenML Record the data value contains a string "foo" and a
-number 42 encoded in a CBOR {{?RFC7049}} array. Since the example above
+number 42 encoded in a CBOR {{-cbor}} array. Since the example above
 uses the JSON format of SenML, the data value containing the binary CBOR
 value is base64-encoded. The data value after base64 decoding is shown
 with CBOR diagnostic notation in {{ex-2-cbor}}.
@@ -198,10 +200,10 @@ Content-Format indication as per {{tbl-senml-reg}}:
 # Acknowledgements {#acks}
 {: numbered="no"}
 
-The authors would like to thank Sergio Abreu for the discussions leading
-to the design of this extension and Isaac Rivera for reviews and
+The authors would like to thank {{{Sérgio Abreu}}} for the discussions leading
+to the design of this extension and {{{Isaac Rivera}}} for reviews and
 feedback.
-Klaus Hartke suggested not burdening this draft with a separate
+{{{Klaus Hartke}}} suggested not burdening this draft with a separate
 mandatory-to-implement version of the fields.
-Alexey Melnikov, Jim Schaad, and Thomas Fossati provided helpful
+{{{Alexey Melnikov}}}, {{{Jim Schaad}}}, and {{{Thomas Fossati}}} provided helpful
 comments at Working-Group last call.
