@@ -42,8 +42,8 @@ author:
 normative:
   IANA.senml:
   RFC7252: coap
-informative:
   I-D.bormann-core-media-content-type-format: mtct
+informative:
   RFC8949: cbor
 
 --- abstract
