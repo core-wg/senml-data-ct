@@ -4,6 +4,7 @@ ipr: trust200902
 docname: draft-ietf-core-senml-data-ct-latest
 keyword: Internet-Draft
 cat: std
+consensus: true
 pi:
   toc: 'yes'
   tocompact: 'yes'
@@ -17,7 +18,7 @@ pi:
   compact: 'no'
   subcompact: 'no'
 title: SenML Data Value Content-Format Indication
-abbrev: SenML Data Value Content-Format Indication
+abbrev: SenML Data Content-Format Indication
 date: 2021
 author:
 - ins: A. Keränen
@@ -42,9 +43,13 @@ author:
 normative:
   IANA.senml:
   RFC7252: coap
-  I-D.bormann-core-media-content-type-format: mtct
+  RFC5234: abnf
+  RFC7231: http
+  IANA.media-types: media-types
+  IANA.core-parameters: core-parameters
 informative:
   RFC8949: cbor
+  RFC6838: mediatype-reg
 
 --- abstract
 
@@ -59,7 +64,7 @@ data.
 
 # Introduction {#intro}
 
-The Sensor Measurement Lists (SenML) media type {{!RFC8428}} can be used
+The Sensor Measurement Lists (SenML) media types {{!RFC8428}} can be used
 to send various kinds of data.  In the example given in
 {{ex-1}}, a temperature value, an indication whether a lock is open, and
 a data value (with SenML field "vd") read from an NFC reader is sent in a
@@ -85,14 +90,14 @@ information; enclosing a Content-Format number (in this case number 60 as
 defined for content-type application/cbor in {{-cbor}}) in the Record is
 illustrated in {{ex-2}}. All registered CoAP Content-Formats are listed
 in the Content-Formats subregistry of the CoRE Parameters registry
-{{?IANA.core-parameters}}.
+{{-core-parameters}}.
 
 ~~~
 {"n":"nfc-reader", "vd":"gmNmb28YKg", "ct":"60"}
 ~~~
 {: #ex-2 title="SenML Record with binary data identified as CBOR"}
 
-In this example SenML Record the data value contains a string "foo" and a
+In this example SenML Record, the data value contains a string "foo" and a
 number 42 encoded in a CBOR {{-cbor}} array. Since the example above
 uses the JSON format of SenML, the data value containing the binary CBOR
 value is base64-encoded. The data value after base64 decoding is shown
@@ -108,11 +113,42 @@ with CBOR diagnostic notation in {{ex-2-cbor}}.
 
 # Terminology
 
-{::boilerplate bcp14}
+{::boilerplate bcp14-tagged}
+
+Media Type:
+: A registered label for representations (byte strings) prepared for
+  interchange, identified by a Media-Type-Name {{?RFC1590}},
+  {{-mediatype-reg}}.
+
+Media-Type-Name:
+: A combination of a type-name and a subtype-name registered in
+  {{-media-types}} as per {{-mediatype-reg}}, conventionally
+  identified by the two names separated by a slash.
+
+Content-Type:
+: A Media-Type-Name, optionally associated with parameters (separated from
+  the media type name and from each other by a semicolon).
+  In HTTP and many other protocols, used in a `Content-Type` header field.
+
+Content-Coding:
+: a registered name for an encoding transformation that has been or
+  can be applied to a representation.  Confusingly, in HTTP the
+  Content-Coding is then given in a header field called
+  `Content-Encoding`; we **never** use this term (except when we are
+  in error).
+
+Content-Format:
+: the combination of a Content-Type and a Content-Coding, identified
+  by a numeric identifier defined by the "CoAP Content-Formats"
+  subregistry of {{-core-parameters}} as per {{-coap}} or a Content-Format-String.
+
+Content-Format-String:
+: the string representation of the combination of a Content-Type and a Content-Coding.
+
 
 Readers should also be familiar with the terms and concepts discussed in
-{{RFC8428}}. Awareness of terminology issues discussed in
-{{-mtct}} can also be very helpful.
+{{RFC8428}}.
+
 
 # SenML Content-Format ("ct") Field
 
@@ -125,13 +161,15 @@ value of this field is a string value, one of:
   unsigned integer in the range of 0-65535, similar to the CoRE Link
   Format {{?RFC6690}} "ct" attribute).
 
-* or a Content-Format-String {{-mtct}} containing a Content-Type and
+* or a Content-Format-String containing a Content-Type and
   optionally a Content-Coding (see below).
 
-The CoAP Content-Format identifier provides a simple and efficient way
+The syntax of this field is formally defined in {{abnf}}.
+
+The CoAP Content-Format number provides a simple and efficient way
 to indicate the type of the data.  Since some Internet media types and
 their content coding and parameter alternatives do not have assigned
-CoAP Content-Format identifiers, using Content-Type and Content-Coding
+CoAP Content-Format numbers, using Content-Type and Content-Coding
 is also allowed. Both methods use a string value in the "ct" field to
 keep its data type consistent across uses.  When the "ct" field
 contains only digits, it is interpreted as a CoAP Content-Format
@@ -140,9 +178,9 @@ identifier.
 To indicate that a Content-Coding is used with a Content-Type, the
 Content-Coding value (e.g., "deflate" {{?RFC7230}}) is appended to the
 Content-Type value (media type and parameters, if any), separated by a "@"
-sign.  For example: "text/plain; charset=utf-8@deflate".  If no "@" sign is
+sign.  For example: `text/plain; charset=utf-8@deflate`.  If no "@" sign is
 present outside the media type parameters, the Content-Coding is not
-specified and the "identity" Content-Coding is used -- no
+specified and the "identity" Content-Coding is used — no
 encoding transformation is employed.
 
 # SenML Base Content-Format ("bct") Field
@@ -170,6 +208,67 @@ The following examples are valid values for the "ct" and "bct" fields
   Content-Coding - equivalent to "11050" CoAP Content-Format identifier)
 * "text/csv" (Comma-Separated Values (CSV) {{?RFC4180}} Content-Type)
 * "text/csv@gzip" (CSV with "gzip" as Content-Coding)
+
+
+# ABNF
+
+This specification provides a formal definition of the syntax of
+Content-Format-Spec strings using ABNF notation {{-abnf}}, which
+contains three new rules and a number of rules collected and adapted
+from various RFCs {{-http}} {{-mediatype-reg}} {{-abnf}} {{?RFC8866}}.
+
+~~~~ abnf
+; New in this document
+
+Content-Format-Spec = Content-Format-Number / Content-Format-String
+
+Content-Format-Number = "0" / (POS-DIGIT *DIGIT)
+Content-Format-String   = Content-Type ["@" Content-Coding]
+
+; Cleaned up from RFC 7231:
+
+Content-Type   = Media-Type-Name *( *SP ";" *SP parameter )
+parameter      = token "=" ( token / quoted-string )
+
+token          = 1*tchar
+tchar          = "!" / "#" / "$" / "%" / "&" / "'" / "*"
+               / "+" / "-" / "." / "^" / "_" / "`" / "|" / "~"
+               / DIGIT / ALPHA
+quoted-string  = %x22 *qdtext %x22
+qdtext         = SP / %x21 / %x23-5B / %x5D-7E
+
+; Adapted from section 3.1.2.1 of RFC 7231
+
+Content-Coding   = token
+
+; Adapted from various specs
+
+Media-Type-Name = type-name "/" subtype-name
+
+; RFC 6838
+
+type-name = restricted-name
+subtype-name = restricted-name
+
+restricted-name = restricted-name-first *126restricted-name-chars
+restricted-name-first  = ALPHA / DIGIT
+restricted-name-chars  = ALPHA / DIGIT / "!" / "#" /
+                         "$" / "&" / "-" / "^" / "_"
+restricted-name-chars =/ "." ; Characters before first dot always
+                             ; specify a facet name
+restricted-name-chars =/ "+" ; Characters after last plus always
+                             ; specify a structured syntax suffix
+
+
+; Boilerplate from RFC 5234 and RFC 8866
+
+DIGIT     =  %x30-39           ; 0 – 9
+POS-DIGIT =  %x31-39           ; 1 – 9
+ALPHA     =  %x41-5A / %x61-7A ; A – Z / a – z
+SP        =  %x20
+
+~~~~
+{: #content-format-spec title="ABNF syntax of Content-Format-Spec"}
 
 # Security Considerations {#seccons}
 
