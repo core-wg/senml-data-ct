@@ -48,6 +48,7 @@ normative:
   IANA.media-types: media-types
   IANA.core-parameters: core-parameters
 informative:
+  RFC4648: base
   RFC8949: cbor
   RFC6838: mediatype-reg
 
@@ -85,12 +86,13 @@ knowledge of the application. However, this context may not always be
 easily available to entities processing the SenML pack. To facilitate
 automatic interpretation it is useful to be able to indicate an Internet
 media type and content-coding right in the SenML Record. The CoAP
-Content-Format (Section 12.3 in {{-coap}}) provides just this
+Content-Format ({{Section 12.3 of -coap}}) provides just this
 information; enclosing a Content-Format number (in this case number 60 as
 defined for content-type application/cbor in {{-cbor}}) in the Record is
 illustrated in {{ex-2}}. All registered CoAP Content-Formats are listed
-in the Content-Formats subregistry of the CoRE Parameters registry
-{{-core-parameters}}.
+in the Content-Formats
+{{subregistry<IANA.core-parameters}}{: relative="#content-formats"}
+of the CoRE Parameters registry {{-core-parameters}}.
 
 ~~~
 {"n":"nfc-reader", "vd":"gmNmb28YKg", "ct":"60"}
@@ -100,7 +102,8 @@ in the Content-Formats subregistry of the CoRE Parameters registry
 In this example SenML Record, the data value contains a string "foo" and a
 number 42 encoded in a CBOR {{-cbor}} array. Since the example above
 uses the JSON format of SenML, the data value containing the binary CBOR
-value is base64-encoded. The data value after base64 decoding is shown
+value is base64-encoded ({{Section 5 of -base}}).
+The data value after base64 decoding is shown
 with CBOR diagnostic notation in {{ex-2-cbor}}.
 
 ~~~
@@ -139,12 +142,18 @@ Content-Coding:
 
 Content-Format:
 : the combination of a Content-Type and a Content-Coding, identified
-  by a numeric identifier defined by the "CoAP Content-Formats"
-  subregistry of {{-core-parameters}} as per {{-coap}} or a Content-Format-String.
+  by (1) a numeric identifier defined by the "CoAP Content-Formats"
+  {{subregistry<IANA.core-parameters}}{: relative="#content-formats"}
+  of {{-core-parameters}} as per {{-coap}} or (2) a Content-Format-String.
 
 Content-Format-String:
 : the string representation of the combination of a Content-Type and a Content-Coding.
 
+
+Content-Format-Spec:
+: the string representation of a Content-Format; either a
+  Content-Format-String or the (decimal) string representation of a
+  Content-Format number.
 
 Readers should also be familiar with the terms and concepts discussed in
 {{RFC8428}}.
@@ -154,7 +163,7 @@ Readers should also be familiar with the terms and concepts discussed in
 
 When a SenML Record contains a Data Value field ("vd"), the Record MAY
 also include a Content-Format indication field, using label "ct".  The
-value of this field is a string value, one of:
+value of this field is a Content-Format-Spec, i.e., one of:
 
 * a CoAP Content-Format identifier in decimal form with no leading
   zeros (except for the value "0" itself).  This value represents an
@@ -189,7 +198,7 @@ The Base Content-Format Field, label "bct", provides a default value for
 the Content-Format Field (label "ct") within its range.  The range of the
 base field includes the Record containing it, up to (but not including)
 the next Record containing a "bct" field, if any, or up to the end of the
-pack otherwise.  Resolution (Section 4.6 of {{RFC8428}}) of this base
+pack otherwise.  Resolution ({{Section 4.6 of RFC8428}}) of this base
 field is performed by adding its value with the label "ct" to all Records
 in this range that carry a "vd" field but do not already contain a
 Content-Format ("ct") field.
@@ -205,7 +214,7 @@ The following examples are valid values for the "ct" and "bct" fields
 * "application/json" (JSON Content-Type -- equivalent to "50" CoAP
   Content-Format identifier)
 * "application/json@deflate" (JSON Content-Type with "deflate" as
-  Content-Coding - equivalent to "11050" CoAP Content-Format identifier)
+  Content-Coding -- equivalent to "11050" CoAP Content-Format identifier)
 * "text/csv" (Comma-Separated Values (CSV) {{?RFC4180}} Content-Type)
 * "text/csv@gzip" (CSV with "gzip" as Content-Coding)
 
@@ -285,7 +294,8 @@ to decompress to extremely large data items.
 (Note to RFC Editor: Please replace all occurrences of "RFC-AAAA" with
 the RFC number of this specification and remove this note.)
 
-IANA is requested to assign new labels in the "SenML Labels" subregistry
+IANA is requested to assign new labels in the "SenML Labels"
+{{subregistry<IANA.senml}}{: relative="#senml-labels"}
 of the SenML registry {{IANA.senml}} (as defined in {{RFC8428}}) for the
 Content-Format indication as per {{tbl-senml-reg}}:
 
@@ -306,3 +316,4 @@ feedback.
 mandatory-to-implement version of the fields.
 {{{Alexey Melnikov}}}, {{{Jim Schaad}}}, and {{{Thomas Fossati}}} provided helpful
 comments at Working-Group last call.
+{{{Marco Tiloca}}} asked for clarifying and using the term Content-Format-Spec.
