@@ -41,6 +41,7 @@ author:
   email: cabo@tzi.org
 
 normative:
+  RFC2045: mime1
   RFC8428: senml
   IANA.senml:
   RFC7252: coap
@@ -133,7 +134,8 @@ Media-Type-Name:
   identified by the two names separated by a slash.
 
 Content-Type:
-: A Media-Type-Name, optionally associated with parameters (separated from
+: A Media-Type-Name, optionally associated with parameters
+  ({{Section 5 of -mime1}}, separated from
   the media type name and from each other by a semicolon).
   In HTTP and many other protocols, used in a `Content-Type` header field.
 
