@@ -41,6 +41,7 @@ author:
   email: cabo@tzi.org
 
 normative:
+  RFC8428: senml
   IANA.senml:
   RFC7252: coap
   RFC5234: abnf
@@ -65,11 +66,14 @@ data.
 
 # Introduction {#intro}
 
-The Sensor Measurement Lists (SenML) media types {{!RFC8428}} can be used
+The Sensor Measurement Lists (SenML) media types {{-senml}} can be used
 to send various kinds of data.  In the example given in
 {{ex-1}}, a temperature value, an indication whether a lock is open, and
 a data value (with SenML field "vd") read from an NFC reader is sent in a
 single SenML pack.
+The example is given in SenML JSON representation, so the "vd" (data
+value) field is encoded as a base64url string (without
+padding), as per {{Section 5 of -senml}}.
 
 ~~~
 [
@@ -156,7 +160,7 @@ Content-Format-Spec:
   Content-Format number.
 
 Readers should also be familiar with the terms and concepts discussed in
-{{RFC8428}}.
+{{-senml}}.
 
 
 # SenML Content-Format ("ct") Field
@@ -198,7 +202,7 @@ The Base Content-Format Field, label "bct", provides a default value for
 the Content-Format Field (label "ct") within its range.  The range of the
 base field includes the Record containing it, up to (but not including)
 the next Record containing a "bct" field, if any, or up to the end of the
-pack otherwise.  Resolution ({{Section 4.6 of RFC8428}}) of this base
+pack otherwise.  Resolution ({{Section 4.6 of -senml}}) of this base
 field is performed by adding its value with the label "ct" to all Records
 in this range that carry a "vd" field but do not already contain a
 Content-Format ("ct") field.
@@ -296,7 +300,7 @@ the RFC number of this specification and remove this note.)
 
 IANA is requested to assign new labels in the "SenML Labels"
 {{subregistry<IANA.senml}}{: relative="#senml-labels"}
-of the SenML registry {{IANA.senml}} (as defined in {{RFC8428}}) for the
+of the SenML registry {{IANA.senml}} (as defined in {{Section 12.2 of -senml}}) for the
 Content-Format indication as per {{tbl-senml-reg}}:
 
 | Name                | Label | JSON Type | XML Type | Reference |
