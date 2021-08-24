@@ -7,8 +7,12 @@
 *~
 .refcache
 .tags
+.schemas.xml
+.Guardfile
+.config.ru
 .targets.mk
 /*-[0-9][0-9].xml
+/*.v2v3.xml
 issues.json
 pulls.json
 report.xml
