@@ -188,13 +188,17 @@ keep its data type consistent across uses.  When the "ct" field
 contains only digits, it is interpreted as a CoAP Content-Format
 identifier.
 
-To indicate that a Content-Coding is used with a Content-Type, the
-Content-Coding value (e.g., "deflate" {{?RFC7230}}) is appended to the
-Content-Type value (media type and parameters, if any), separated by a "@"
-sign.  For example: `text/plain; charset=utf-8@deflate`.  If no "@" sign is
-present outside the media type parameters, the Content-Coding is not
-specified and the "identity" Content-Coding is used — no
-encoding transformation is employed.
+To indicate that a Content-Coding is used with a Content-Type,
+the Content-Coding value is appended to the Content-Type value (media
+type and parameters, if any), separated by a "@" sign.
+For example (using a Content-Coding value of "deflate" as defined in
+{{Section 4.2.2 of RFC7230}}):
+
+    text/plain; charset=utf-8@deflate
+
+If no "@" sign is present after the media type and parameters,
+then no Content-Coding has been specified, and the "identity"
+Content-Coding is used — no encoding transformation is employed.
 
 # SenML Base Content-Format ("bct") Field
 
