@@ -150,7 +150,9 @@ Content-Format:
 : the combination of a Content-Type and a Content-Coding, identified
   by (1) a numeric identifier defined by the "CoAP Content-Formats"
   {{subregistry<IANA.core-parameters}}{: relative="#content-formats"}
-  of {{-core-parameters}} as per {{-coap}} or (2) a Content-Format-String.
+  of {{-core-parameters}} as per {{-coap}} (referred to as Content-Format
+  number),
+  or (2) a Content-Format-String.
 
 Content-Format-String:
 : the string representation of the combination of a Content-Type and a Content-Coding.
