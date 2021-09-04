@@ -238,7 +238,7 @@ The following examples are valid values for the "ct" and "bct" fields
 * "application/json@deflate" (JSON Content-Type with "deflate" as
   Content-Coding -- equivalent to "11050" CoAP Content-Format identifier)
 * "text/csv" (Comma-Separated Values (CSV) {{?RFC4180}} Content-Type)
-* "text/csv@gzip" (CSV with "gzip" as Content-Coding)
+* "text/csv;header=present@gzip" (CSV with header row, using "gzip" as Content-Coding)
 
 
 # ABNF
