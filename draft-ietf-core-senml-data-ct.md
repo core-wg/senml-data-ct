@@ -209,6 +209,22 @@ field is performed by adding its value with the label "ct" to all Records
 in this range that carry a "vd" field but do not already contain a
 Content-Format ("ct") field.
 
+{{ex-bct}} shows a variation of {{ex-2}} with multiple records, with the
+"nfc-reader" records resolving to the base field value "60" and the
+"iris-photo" record overriding this with the "image/png" media type
+(actual data left out for brevity).
+
+~~~
+[
+  {"bct":"60"},
+  {"n":"nfc-reader", "vd":"gmNmb28YKg"},
+  {"n":"iris-photo", "vd":".....", "ct":"image/png"},
+  {"n":"nfc-reader", "vd":"gmNiYXIYKw"}
+]
+~~~
+{: #ex-bct title="SenML pack with bct field"}
+
+
 # Examples
 
 The following examples are valid values for the "ct" and "bct" fields
