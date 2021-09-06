@@ -218,7 +218,7 @@ Content-Format ("ct") field.
 
 ~~~
 [
-  {"bct":"60", "n":"nfc-reader", "vd":"gmNmb28YKg"},
+  {"n":"nfc-reader", "vd":"gmNmb28YKg", "bct":"60"},
   {"n":"nfc-reader", "vd":"gmNiYXIYKw"},
   {"n":"iris-photo", "vd":".....", "ct":"image/png"},
   {"n":"nfc-reader", "vd":"gmNiYXoYLA"}
