@@ -99,7 +99,7 @@ in the Content-Formats
 {{subregistry<IANA.core-parameters}}{: relative="#content-formats"}
 of the CoRE Parameters registry {{-core-parameters}}.
 
-~~~ senml-json
+~~~ json
 {"n":"nfc-reader", "vd":"gmNmb28YKg", "ct":"60"}
 ~~~
 {: #ex-2 title="SenML Record with binary data identified as CBOR"}
