@@ -41,6 +41,8 @@ author:
   email: cabo@tzi.org
 
 normative:
+  RFC2045: mime1
+  RFC8428: senml
   IANA.senml:
   RFC7252: coap
   RFC5234: abnf
@@ -67,13 +69,16 @@ data.
 
 # Introduction {#intro}
 
-The Sensor Measurement Lists (SenML) media types {{!RFC8428}} can be used
+The Sensor Measurement Lists (SenML) media types {{-senml}} can be used
 to send various kinds of data.  In the example given in
 {{ex-1}}, a temperature value, an indication whether a lock is open, and
 a data value (with SenML field "vd") read from an NFC reader is sent in a
 single SenML pack.
+The example is given in SenML JSON representation, so the "vd" (data
+value) field is encoded as a base64url string (without
+padding), as per {{Section 5 of -senml}}.
 
-~~~
+~~~ senml-json
 [
   {"bn":"urn:dev:ow:10e2073a01080063:","n":"temp","u":"Cel","v":7.1},
   {"n":"open","vb":false},
@@ -96,7 +101,7 @@ in the {{content-formats (COAP Content-Formats
 registry)<IANA.core-parameters}} {{-core-parameters}} as specified by
 {{Section 12.3 of -coap}}.
 
-~~~
+~~~ json
 {"n":"nfc-reader", "vd":"gmNmb28YKg", "ct":"60"}
 ~~~
 {: #ex-2 title="SenML Record with binary data identified as CBOR"}
@@ -108,7 +113,7 @@ value is base64-encoded ({{Section 5 of -base}}).
 The data value after base64 decoding is shown
 with CBOR diagnostic notation in {{ex-2-cbor}}.
 
-~~~
+~~~ cbor-pretty
 82           # array(2)
    63        # text(3)
       666F6F # "foo"
@@ -131,7 +136,8 @@ Media-Type-Name:
   identified by the two names separated by a slash.
 
 Content-Type:
-: A Media-Type-Name, optionally associated with parameters (separated from
+: A Media-Type-Name, optionally associated with parameters
+  ({{Section 5 of -mime1}}, separated from
   the media type name and from each other by a semicolon).
   In HTTP and many other protocols, used in a `Content-Type` header field.
 
@@ -148,7 +154,8 @@ Content-Format:
 : the combination of a Content-Type and a Content-Coding, identified
   by (1) a numeric identifier defined in the {{content-formats (COAP
   Content-Formats registry)<IANA.core-parameters}} {{-core-parameters}}
-  as per {{Section 12.3 of -coap}}, or (2) a Content-Format-String.
+  as per {{Section 12.3 of -coap}} (referred to as Content-Format
+  number), or (2) a Content-Format-String.
 
 Content-Format-String:
 : the string representation of the combination of a Content-Type and a Content-Coding.
@@ -160,7 +167,7 @@ Content-Format-Spec:
   Content-Format number.
 
 Readers should also be familiar with the terms and concepts discussed in
-{{RFC8428}}.
+{{-senml}}.
 
 
 # SenML Content-Format ("ct") Field
@@ -206,10 +213,29 @@ The Base Content-Format Field, label "bct", provides a default value for
 the Content-Format Field (label "ct") within its range.  The range of the
 base field includes the Record containing it, up to (but not including)
 the next Record containing a "bct" field, if any, or up to the end of the
-pack otherwise.  Resolution ({{Section 4.6 of RFC8428}}) of this base
+pack otherwise.  Resolution ({{Section 4.6 of -senml}}) of this base
 field is performed by adding its value with the label "ct" to all Records
 in this range that carry a "vd" field but do not already contain a
 Content-Format ("ct") field.
+
+{{ex-bct}} shows a variation of {{ex-2}} with multiple records, with the
+"nfc-reader" records resolving to the base field value "60" and the
+"iris-photo" record overriding this with the "image/png" media type
+(actual data left out for brevity).
+
+~~~ senml-json
+[
+  {"n":"nfc-reader", "vd":"gmNmb28YKg",
+   "bct":"60", "bt":1627430700},
+  {"n":"nfc-reader", "vd":"gmNiYXIYKw", "t":10},
+  {"n":"iris-photo", "vd":".....", "ct":"image/png", "t":10},
+  {"n":"nfc-reader", "vd":"gmNiYXoYLA", "t":20}
+]
+~~~
+{: #ex-bct title="SenML pack with bct field"}
+
+
+
 
 # Examples
 
@@ -224,7 +250,7 @@ The following examples are valid values for the "ct" and "bct" fields
 * "application/json@deflate" (JSON Content-Type with "deflate" as
   Content-Coding -- equivalent to "11050" CoAP Content-Format identifier)
 * "text/csv" (Comma-Separated Values (CSV) {{?RFC4180}} Content-Type)
-* "text/csv@gzip" (CSV with "gzip" as Content-Coding)
+* "text/csv;header=present@gzip" (CSV with header row, using "gzip" as Content-Coding)
 
 
 # ABNF
@@ -304,7 +330,7 @@ the RFC number of this specification and remove this note.)
 
 IANA is requested to assign new labels in the "SenML Labels"
 {{subregistry<IANA.senml}}{: relative="#senml-labels"}
-of the SenML registry {{IANA.senml}} (as defined in {{RFC8428}}) for the
+of the SenML registry {{IANA.senml}} (as defined in {{Section 12.2 of -senml}}) for the
 Content-Format indication as per {{tbl-senml-reg}}:
 
 | Name                | Label | JSON Type | XML Type | Reference |
