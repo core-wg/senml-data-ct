@@ -76,7 +76,7 @@ The example is given in SenML JSON representation, so the "vd" (data
 value) field is encoded as a base64url string (without
 padding), as per {{Section 5 of -senml}}.
 
-~~~
+~~~ senml-json
 [
   {"bn":"urn:dev:ow:10e2073a01080063:","n":"temp","u":"Cel","v":7.1},
   {"n":"open","vb":false},
@@ -99,7 +99,7 @@ in the Content-Formats
 {{subregistry<IANA.core-parameters}}{: relative="#content-formats"}
 of the CoRE Parameters registry {{-core-parameters}}.
 
-~~~
+~~~ senml-json
 {"n":"nfc-reader", "vd":"gmNmb28YKg", "ct":"60"}
 ~~~
 {: #ex-2 title="SenML Record with binary data identified as CBOR"}
@@ -111,7 +111,7 @@ value is base64-encoded ({{Section 5 of -base}}).
 The data value after base64 decoding is shown
 with CBOR diagnostic notation in {{ex-2-cbor}}.
 
-~~~
+~~~ cbor-pretty
 82           # array(2)
    63        # text(3)
       666F6F # "foo"
@@ -216,7 +216,7 @@ Content-Format ("ct") field.
 "iris-photo" record overriding this with the "image/png" media type
 (actual data left out for brevity).
 
-~~~
+~~~ senml-json
 [
   {"n":"nfc-reader", "vd":"gmNmb28YKg",
    "bct":"60", "bt":1627430700},
