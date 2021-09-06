@@ -46,9 +46,11 @@ normative:
   IANA.senml:
   RFC7252: coap
   RFC5234: abnf
+  RFC7230: http0
   RFC7231: http
   IANA.media-types: media-types
   IANA.core-parameters: core-parameters
+  IANA.http-parameters: http-parameters
 informative:
   RFC4648: base
   RFC8949: cbor
@@ -95,9 +97,9 @@ Content-Format ({{Section 12.3 of -coap}}) provides just this
 information; enclosing a Content-Format number (in this case number 60 as
 defined for content-type application/cbor in {{-cbor}}) in the Record is
 illustrated in {{ex-2}}. All registered CoAP Content-Formats are listed
-in the Content-Formats
-{{subregistry<IANA.core-parameters}}{: relative="#content-formats"}
-of the CoRE Parameters registry {{-core-parameters}}.
+in the {{content-formats (COAP Content-Formats
+registry)<IANA.core-parameters}} {{-core-parameters}} as specified by
+{{Section 12.3 of -coap}}.
 
 ~~~ json
 {"n":"nfc-reader", "vd":"gmNmb28YKg", "ct":"60"}
@@ -140,19 +142,20 @@ Content-Type:
   In HTTP and many other protocols, used in a `Content-Type` header field.
 
 Content-Coding:
-: a registered name for an encoding transformation that has been or
-  can be applied to a representation.  Confusingly, in HTTP the
-  Content-Coding is then given in a header field called
-  `Content-Encoding`; we **never** use this term (except when we are
-  in error).
+: A name registered in the {{content-coding (HTTP Content Coding
+  registry)<IANA.http-parameters}} {{-http-parameters}} as specified by
+  {{Section 8.5 of RFC7230}}, indicating an encoding transformation
+  with semantics further specified in {{Section 3.1.2.1 of RFC7231}}.
+  Confusingly, in HTTP the Content-Coding is found in a header field
+  called "Content-Encoding", however "Content-Coding" is the correct
+  term.
 
 Content-Format:
 : the combination of a Content-Type and a Content-Coding, identified
-  by (1) a numeric identifier defined by the "CoAP Content-Formats"
-  {{subregistry<IANA.core-parameters}}{: relative="#content-formats"}
-  of {{-core-parameters}} as per {{-coap}} (referred to as Content-Format
-  number),
-  or (2) a Content-Format-String.
+  by (1) a numeric identifier defined in the {{content-formats (COAP
+  Content-Formats registry)<IANA.core-parameters}} {{-core-parameters}}
+  as per {{Section 12.3 of -coap}} (referred to as Content-Format
+  number), or (2) a Content-Format-String.
 
 Content-Format-String:
 : the string representation of the combination of a Content-Type and a Content-Coding.
@@ -192,13 +195,17 @@ keep its data type consistent across uses.  When the "ct" field
 contains only digits, it is interpreted as a CoAP Content-Format
 identifier.
 
-To indicate that a Content-Coding is used with a Content-Type, the
-Content-Coding value (e.g., "deflate" {{?RFC7230}}) is appended to the
-Content-Type value (media type and parameters, if any), separated by a "@"
-sign.  For example: `text/plain; charset=utf-8@deflate`.  If no "@" sign is
-present outside the media type parameters, the Content-Coding is not
-specified and the "identity" Content-Coding is used — no
-encoding transformation is employed.
+To indicate that a Content-Coding is used with a Content-Type,
+the Content-Coding value is appended to the Content-Type value (media
+type and parameters, if any), separated by a "@" sign.
+For example (using a Content-Coding value of "deflate" as defined in
+{{Section 4.2.2 of RFC7230}}):
+
+    text/plain; charset=utf-8@deflate
+
+If no "@" sign is present after the media type and parameters,
+then no Content-Coding has been specified, and the "identity"
+Content-Coding is used — no encoding transformation is employed.
 
 # SenML Base Content-Format ("bct") Field
 
