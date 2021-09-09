@@ -60,9 +60,10 @@ informative:
 
 The Sensor Measurement Lists (SenML) media type supports multiple types
 of values, from numbers to text strings and arbitrary binary data values.
-In order to simplify processing of the data values, this document proposes
-to specify a new SenML field for indicating the Content-Format of the
-data.
+In order to facilitate processing of binary data values, this document
+specifies a pair of new SenML fields for indicating the
+Content-Format of those binary data values, i.e., their Internet media
+type including parameters as well as any Content-Coding applied.
 
 --- middle
 
