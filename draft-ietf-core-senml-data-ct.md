@@ -94,10 +94,10 @@ knowledge of the application. However, this context may not always be
 easily available to entities processing the SenML pack. To facilitate
 automatic interpretation it is useful to be able to indicate an Internet
 media type and content-coding right in the SenML Record. The CoAP
-Content-Format ({{Section 12.3 of -coap}}) provides just this
-information; enclosing a Content-Format number (in this case number 60 as
+Content-Format ({{Section 12.3 of -coap}}) provides this
+information in the form of a single unsigned integer; enclosing a Content-Format number (in this case number 60 as
 defined for content-type application/cbor in {{-cbor}}) in the Record is
-illustrated in {{ex-2}}. All registered CoAP Content-Formats are listed
+illustrated in {{ex-2}}. All registered CoAP Content-Formatn numbers are listed
 in the {{content-formats (COAP Content-Formats
 registry)<IANA.core-parameters}} {{-core-parameters}} as specified by
 {{Section 12.3 of -coap}}.
