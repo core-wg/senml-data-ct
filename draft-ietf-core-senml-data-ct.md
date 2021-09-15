@@ -97,7 +97,7 @@ media type and content-coding right in the SenML Record. The CoAP
 Content-Format ({{Section 12.3 of -coap}}) provides this
 information in the form of a single unsigned integer; enclosing a Content-Format number (in this case number 60 as
 defined for content-type application/cbor in {{-cbor}}) in the Record is
-illustrated in {{ex-2}}. All registered CoAP Content-Formatn numbers are listed
+illustrated in {{ex-2}}. All registered CoAP Content-Format numbers are listed
 in the {{content-formats (COAP Content-Formats
 registry)<IANA.core-parameters}} {{-core-parameters}} as specified by
 {{Section 12.3 of -coap}}.
