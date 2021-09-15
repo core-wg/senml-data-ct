@@ -60,9 +60,10 @@ informative:
 
 The Sensor Measurement Lists (SenML) media type supports multiple types
 of values, from numbers to text strings and arbitrary binary data values.
-In order to simplify processing of the data values, this document proposes
-to specify a new SenML field for indicating the Content-Format of the
-data.
+In order to facilitate processing of binary data values, this document
+specifies a pair of new SenML fields for indicating the
+Content-Format of those binary data values, i.e., their Internet media
+type including parameters as well as any Content-Coding applied.
 
 --- middle
 
@@ -93,10 +94,10 @@ knowledge of the application. However, this context may not always be
 easily available to entities processing the SenML pack. To facilitate
 automatic interpretation it is useful to be able to indicate an Internet
 media type and content-coding right in the SenML Record. The CoAP
-Content-Format ({{Section 12.3 of -coap}}) provides just this
-information; enclosing a Content-Format number (in this case number 60 as
+Content-Format ({{Section 12.3 of -coap}}) provides this
+information in the form of a single unsigned integer; enclosing a Content-Format number (in this case number 60 as
 defined for content-type application/cbor in {{-cbor}}) in the Record is
-illustrated in {{ex-2}}. All registered CoAP Content-Formats are listed
+illustrated in {{ex-2}}. All registered CoAP Content-Format numbers are listed
 in the {{content-formats (COAP Content-Formats
 registry)<IANA.core-parameters}} {{-core-parameters}} as specified by
 {{Section 12.3 of -coap}}.
