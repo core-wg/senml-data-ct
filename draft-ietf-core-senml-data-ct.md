@@ -241,7 +241,7 @@ Content-Format ("ct") field.
 # Examples
 
 The following examples are valid values for the "ct" and "bct" fields
-(explanation/comments in parenthesis):
+(explanation/comments in parentheses):
 
 * "60" (CoAP Content-Format for "application/cbor")
 * "0" (CoAP Content-Format for "text/plain" with parameter
