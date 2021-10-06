@@ -62,8 +62,8 @@ The Sensor Measurement Lists (SenML) media type supports multiple types
 of values, from numbers to text strings and arbitrary binary data values.
 In order to facilitate processing of binary data values, this document
 specifies a pair of new SenML fields for indicating the
-Content-Format of those binary data values, i.e., their Internet media
-type including parameters as well as any Content-Coding applied.
+content format of those binary data values, i.e., their Internet media
+type including parameters as well as any content codings applied.
 
 --- middle
 
@@ -93,7 +93,9 @@ field based on the context, e.g., name of the data source and out-of-band
 knowledge of the application. However, this context may not always be
 easily available to entities processing the SenML pack. To facilitate
 automatic interpretation it is useful to be able to indicate an Internet
-media type and content-coding right in the SenML Record. The CoAP
+media type and, optionally, content codings right in the SenML Record.
+
+The CoAP
 Content-Format ({{Section 12.3 of -coap}}) provides this
 information in the form of a single unsigned integer; enclosing a Content-Format number (in this case number 60 as
 defined for content-type application/cbor in {{-cbor}}) in the Record is
@@ -101,6 +103,10 @@ illustrated in {{ex-2}}. All registered CoAP Content-Format numbers are listed
 in the {{content-formats (COAP Content-Formats
 registry)<IANA.core-parameters}} {{-core-parameters}} as specified by
 {{Section 12.3 of -coap}}.
+Note that, at the time of writing, the structure of this registry only
+provides for zero or one content codings; nothing in the present
+document needs to change if the registry is extended to allow
+sequences of content codings.
 
 ~~~ json
 {"n":"nfc-reader", "vd":"gmNmb28YKg", "ct":"60"}
@@ -142,28 +148,28 @@ Content-Type:
   the media type name and from each other by a semicolon).
   In HTTP and many other protocols, used in a `Content-Type` header field.
 
-Content-Coding:
+content coding:
 : A name registered in the {{content-coding (HTTP Content Coding
   registry)<IANA.http-parameters}} {{-http-parameters}} as specified by
   {{Section 8.5 of RFC7230}}, indicating an encoding transformation
   with semantics further specified in {{Section 3.1.2.1 of RFC7231}}.
-  Confusingly, in HTTP the Content-Coding is found in a header field
-  called "Content-Encoding", however "Content-Coding" is the correct
-  term.
+  Confusingly, in HTTP, content coding values are found in a header field
+  called "Content-Encoding", however "content coding" is the correct
+  term for the process and the registered values.
 
-Content-Format:
-: the combination of a Content-Type and a Content-Coding, identified
+content format:
+: the combination of a Content-Type and zero or more content codings, identified
   by (1) a numeric identifier defined in the {{content-formats (COAP
   Content-Formats registry)<IANA.core-parameters}} {{-core-parameters}}
   as per {{Section 12.3 of -coap}} (referred to as Content-Format
   number), or (2) a Content-Format-String.
 
 Content-Format-String:
-: the string representation of the combination of a Content-Type and a Content-Coding.
-
+: the string representation of the combination of a Content-Type and
+  zero or more content codings.
 
 Content-Format-Spec:
-: the string representation of a Content-Format; either a
+: the string representation of a content format; either a
   Content-Format-String or the (decimal) string representation of a
   Content-Format number.
 
@@ -177,36 +183,39 @@ When a SenML Record contains a Data Value field ("vd"), the Record MAY
 also include a Content-Format indication field, using label "ct".  The
 value of this field is a Content-Format-Spec, i.e., one of:
 
-* a CoAP Content-Format identifier in decimal form with no leading
+* a CoAP Content-Format number in decimal form with no leading
   zeros (except for the value "0" itself).  This value represents an
   unsigned integer in the range of 0-65535, similar to the CoRE Link
   Format {{?RFC6690}} "ct" attribute).
 
 * or a Content-Format-String containing a Content-Type and
-  optionally a Content-Coding (see below).
+  optionally zero or more content codings (see below).
 
 The syntax of this field is formally defined in {{abnf}}.
 
 The CoAP Content-Format number provides a simple and efficient way
 to indicate the type of the data.  Since some Internet media types and
 their content coding and parameter alternatives do not have assigned
-CoAP Content-Format numbers, using Content-Type and Content-Coding
+CoAP Content-Format numbers, using Content-Type and zero or more
+content codings
 is also allowed. Both methods use a string value in the "ct" field to
 keep its data type consistent across uses.  When the "ct" field
 contains only digits, it is interpreted as a CoAP Content-Format
-identifier.
+number.
 
-To indicate that a Content-Coding is used with a Content-Type,
-the Content-Coding value is appended to the Content-Type value (media
-type and parameters, if any), separated by a "@" sign.
-For example (using a Content-Coding value of "deflate" as defined in
+To indicate that one or more content codings are used with a Content-Type,
+each of the content coding values is appended to the Content-Type value (media
+type and parameters, if any), separated by a "@" sign, in the order of
+the content codings were applied (the same order as in {{Section 3.1.2.2
+of RFC7231}}).
+For example (using a content coding value of "deflate" as defined in
 {{Section 4.2.2 of RFC7230}}):
 
     text/plain; charset=utf-8@deflate
 
 If no "@" sign is present after the media type and parameters,
-then no Content-Coding has been specified, and the "identity"
-Content-Coding is used — no encoding transformation is employed.
+then no content coding has been specified, and the "identity"
+content coding is used — no encoding transformation is employed.
 
 # SenML Base Content-Format ("bct") Field
 
@@ -243,15 +252,18 @@ Content-Format ("ct") field.
 The following examples are valid values for the "ct" and "bct" fields
 (explanation/comments in parentheses):
 
-* "60" (CoAP Content-Format for "application/cbor")
-* "0" (CoAP Content-Format for "text/plain" with parameter
+* "60" (CoAP Content-Format number for "application/cbor")
+* "0" (CoAP Content-Format number for "text/plain" with parameter
   "charset=utf-8")
 * "application/json" (JSON Content-Type -- equivalent to "50" CoAP
-  Content-Format identifier)
+  Content-Format number)
 * "application/json@deflate" (JSON Content-Type with "deflate" as
-  Content-Coding -- equivalent to "11050" CoAP Content-Format identifier)
+  content coding -- equivalent to "11050" CoAP Content-Format number)
+* "application/json@deflate@aes128gcm" (JSON Content-Type with
+  "deflate" followed by "aes128gcm" as content codings)
 * "text/csv" (Comma-Separated Values (CSV) {{?RFC4180}} Content-Type)
-* "text/csv;header=present@gzip" (CSV with header row, using "gzip" as Content-Coding)
+* "text/csv;header=present@gzip" (CSV with header row, using "gzip" as
+  content coding)
 
 
 # ABNF
@@ -267,7 +279,7 @@ from various RFCs {{-http}} {{-mediatype-reg}} {{-abnf}} {{?RFC8866}}.
 Content-Format-Spec = Content-Format-Number / Content-Format-String
 
 Content-Format-Number = "0" / (POS-DIGIT *DIGIT)
-Content-Format-String   = Content-Type ["@" Content-Coding]
+Content-Format-String   = Content-Type *("@" Content-Coding)
 
 ; Cleaned up from RFC 7231:
 
