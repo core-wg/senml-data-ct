@@ -339,6 +339,9 @@ Content-Format indication as per {{tbl-senml-reg}}:
 | Content-Format      | ct    | String    | string   | RFC-AAAA  |
 {: #tbl-senml-reg cols='r l l' title="IANA Registration for new SenML Labels"}
 
+Note that as per {{Section 12.2 of -senml}}, no CBOR labels or EXI
+schemaId values (EXI ID column) are supplied.
+
 --- back
 
 # Acknowledgements {#acks}
