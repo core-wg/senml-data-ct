@@ -191,7 +191,7 @@ value of this field is a Content-Format-Spec, i.e., one of:
   Format {{?RFC6690}}).
 
 * or a Content-Format-String containing a Content-Type and
-  optionally zero or more content codings (see below).
+  zero or more content codings (see below).
 
 The syntax of this field is formally defined in {{abnf}}.
 
