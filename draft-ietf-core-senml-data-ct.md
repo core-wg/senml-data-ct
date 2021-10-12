@@ -91,7 +91,8 @@ padding), as per {{Section 5 of -senml}}.
 The receiver is expected to know how to interpret the data in the "vd"
 field based on the context, e.g., name of the data source and out-of-band
 knowledge of the application. However, this context may not always be
-easily available to entities processing the SenML pack. To facilitate
+easily available to entities processing the SenML pack, especially if
+the pack is propagated over time and via multiple entities. To facilitate
 automatic interpretation it is useful to be able to indicate an Internet
 media type and, optionally, content codings right in the SenML Record.
 
@@ -185,8 +186,9 @@ value of this field is a Content-Format-Spec, i.e., one of:
 
 * a CoAP Content-Format number in decimal form with no leading
   zeros (except for the value "0" itself).  This value represents an
-  unsigned integer in the range of 0-65535, similar to the CoRE Link
-  Format {{?RFC6690}} "ct" attribute).
+  unsigned integer in the range of 0-65535, similar to the  "ct"
+  attribute defined in {{Section 7.2.1 of -coap}} for CoRE Link
+  Format {{?RFC6690}}).
 
 * or a Content-Format-String containing a Content-Type and
   optionally zero or more content codings (see below).
@@ -223,7 +225,7 @@ The Base Content-Format Field, label "bct", provides a default value for
 the Content-Format Field (label "ct") within its range.  The range of the
 base field includes the Record containing it, up to (but not including)
 the next Record containing a "bct" field, if any, or up to the end of the
-pack otherwise.  Resolution ({{Section 4.6 of -senml}}) of this base
+pack otherwise.  The process of resolving ({{Section 4.6 of -senml}}) this base
 field is performed by adding its value with the label "ct" to all Records
 in this range that carry a "vd" field but do not already contain a
 Content-Format ("ct") field.
@@ -281,7 +283,8 @@ Content-Format-Spec = Content-Format-Number / Content-Format-String
 Content-Format-Number = "0" / (POS-DIGIT *DIGIT)
 Content-Format-String   = Content-Type *("@" Content-Coding)
 
-; Cleaned up from RFC 7231:
+; Cleaned up from RFC 7231, only leaving SP as blank space, and
+; removing legacy 8-bit characters:
 
 Content-Type   = Media-Type-Name *( *SP ";" *SP parameter )
 parameter      = token "=" ( token / quoted-string )
