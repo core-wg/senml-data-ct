@@ -46,8 +46,9 @@ normative:
   IANA.senml:
   RFC7252: coap
   RFC5234: abnf
-  RFC7230: http0
-  RFC7231: http
+#  RFC7230: http0
+#  RFC7231: http
+  I-D.ietf-httpbis-semantics: http-new
   IANA.media-types: media-types
   IANA.core-parameters: core-parameters
   IANA.http-parameters: http-parameters
@@ -173,8 +174,9 @@ Content-Type:
 content coding:
 : A name registered in the {{content-coding (HTTP Content Coding
   registry)<IANA.http-parameters}} {{-http-parameters}} as specified by
-  {{Section 8.5 of RFC7230}}, indicating an encoding transformation
-  with semantics further specified in {{Section 3.1.2.1 of RFC7231}}.
+  {{Sections 16.6.1 and 18.6 of -http-new}}, indicating an encoding
+  transformation with semantics further specified in {{Section 8.4.1 of
+  -http-new}}.
   Confusingly, in HTTP, content coding values are found in a header field
   called "Content-Encoding", however "content coding" is the correct
   term for the process and the registered values.
@@ -229,10 +231,10 @@ number.
 To indicate that one or more content codings are used with a Content-Type,
 each of the content coding values is appended to the Content-Type value (media
 type and parameters, if any), separated by a "@" sign, in the order of
-the content codings were applied (the same order as in {{Section 3.1.2.2
-of RFC7231}}).
+the content codings were applied (the same order as in {{Section 8.4
+of -http-new}}).
 For example (using a content coding value of "deflate" as defined in
-{{Section 4.2.2 of RFC7230}}):
+{{Section 8.4.1.2 of -http-new}}):
 
     text/plain; charset=utf-8@deflate
 
@@ -294,7 +296,7 @@ The following examples are valid values for the "ct" and "bct" fields
 This specification provides a formal definition of the syntax of
 Content-Format-Spec strings using ABNF notation {{-abnf}}, which
 contains three new rules and a number of rules collected and adapted
-from various RFCs {{-http}} {{-mediatype-reg}} {{-abnf}} {{?RFC8866}}.
+from various RFCs {{-http-new}} {{-mediatype-reg}} {{-abnf}} {{?RFC8866}}.
 
 ~~~~ abnf
 ; New in this document
@@ -349,6 +351,11 @@ SP        =  %x20
 
 ~~~~
 {: #content-format-spec title="ABNF syntax of Content-Format-Spec"}
+
+[^replace]
+
+[^replace]: RFC editor: Please replace \[RFC-httpbis-semantics] by what gets
+            published from {{-http-new}}.
 
 # Security Considerations {#seccons}
 
