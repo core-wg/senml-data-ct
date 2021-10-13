@@ -306,8 +306,10 @@ Content-Format-Spec = Content-Format-Number / Content-Format-String
 Content-Format-Number = "0" / (POS-DIGIT *DIGIT)
 Content-Format-String   = Content-Type *("@" Content-Coding)
 
-; Cleaned up from RFC 7231, only leaving SP as blank space, and
-; removing legacy 8-bit characters:
+; Cleaned up from [RFC-httpbis-semantics],
+; leaving only SP as blank space,
+; removing legacy 8-bit characters, and
+; leaving the parameter as mandatory:
 
 Content-Type   = Media-Type-Name *( *SP ";" *SP parameter )
 parameter      = token "=" ( token / quoted-string )
@@ -316,10 +318,11 @@ token          = 1*tchar
 tchar          = "!" / "#" / "$" / "%" / "&" / "'" / "*"
                / "+" / "-" / "." / "^" / "_" / "`" / "|" / "~"
                / DIGIT / ALPHA
-quoted-string  = %x22 *qdtext %x22
+quoted-string  = %x22 *( qdtext / quoted-pair ) %x22
 qdtext         = SP / %x21 / %x23-5B / %x5D-7E
+quoted-pair    = "\" ( SP / VCHAR )
 
-; Adapted from section 3.1.2.1 of RFC 7231
+; Adapted from section 8.4.1 of [RFC-httpbis-semantics]
 
 Content-Coding   = token
 
@@ -348,6 +351,7 @@ DIGIT     =  %x30-39           ; 0 – 9
 POS-DIGIT =  %x31-39           ; 1 – 9
 ALPHA     =  %x41-5A / %x61-7A ; A – Z / a – z
 SP        =  %x20
+VCHAR     =  %x21-7E           ; printable ASCII (no SP)
 
 ~~~~
 {: #content-format-spec title="ABNF syntax of Content-Format-Spec"}
