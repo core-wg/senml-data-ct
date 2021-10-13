@@ -46,8 +46,9 @@ normative:
   IANA.senml:
   RFC7252: coap
   RFC5234: abnf
-  RFC7230: http0
-  RFC7231: http
+#  RFC7230: http0
+#  RFC7231: http
+  I-D.ietf-httpbis-semantics: http-new
   IANA.media-types: media-types
   IANA.core-parameters: core-parameters
   IANA.http-parameters: http-parameters
@@ -129,6 +130,27 @@ with CBOR diagnostic notation in {{ex-2-cbor}}.
 ~~~
 {: #ex-2-cbor title="Example Data Value in CBOR diagnostic notation"}
 
+## Evolution
+
+As with SenML in general, there is no expectation that the creator of
+a SenML pack knows (or has negotiated with) each consumer of that pack,
+which may be very remote in space and particularly in time.
+This means that the SenML creator in general has no way to know
+whether the consumer knows:
+
+- each specific media-type-name used
+- each parameter and each parameter value used
+- each content coding in use
+- each Content-Format number in use for a combination of these
+
+What SenML, as well as the new fields defined here, guarantees is that
+a recipient implementation *knows* when it needs to be updated to
+understand these field values and the values controlled by them;
+registries are used to evolve these name spaces in a controlled way.
+SenML packs can be processed by a consumer while not understanding all
+the information in them, and information can generally be preserved in
+this processing such that it is useful for further consumers.
+
 # Terminology
 
 {::boilerplate bcp14-tagged}
@@ -146,14 +168,15 @@ Media-Type-Name:
 Content-Type:
 : A Media-Type-Name, optionally associated with parameters
   ({{Section 5 of -mime1}}, separated from
-  the media type name and from each other by a semicolon).
+  the Media-Type-Name and from each other by a semicolon).
   In HTTP and many other protocols, used in a `Content-Type` header field.
 
 content coding:
 : A name registered in the {{content-coding (HTTP Content Coding
   registry)<IANA.http-parameters}} {{-http-parameters}} as specified by
-  {{Section 8.5 of RFC7230}}, indicating an encoding transformation
-  with semantics further specified in {{Section 3.1.2.1 of RFC7231}}.
+  {{Sections 16.6.1 and 18.6 of -http-new}}, indicating an encoding
+  transformation with semantics further specified in {{Section 8.4.1 of
+  -http-new}}.
   Confusingly, in HTTP, content coding values are found in a header field
   called "Content-Encoding", however "content coding" is the correct
   term for the process and the registered values.
@@ -208,10 +231,10 @@ number.
 To indicate that one or more content codings are used with a Content-Type,
 each of the content coding values is appended to the Content-Type value (media
 type and parameters, if any), separated by a "@" sign, in the order of
-the content codings were applied (the same order as in {{Section 3.1.2.2
-of RFC7231}}).
+the content codings were applied (the same order as in {{Section 8.4
+of -http-new}}).
 For example (using a content coding value of "deflate" as defined in
-{{Section 4.2.2 of RFC7230}}):
+{{Section 8.4.1.2 of -http-new}}):
 
     text/plain; charset=utf-8@deflate
 
@@ -273,7 +296,7 @@ The following examples are valid values for the "ct" and "bct" fields
 This specification provides a formal definition of the syntax of
 Content-Format-Spec strings using ABNF notation {{-abnf}}, which
 contains three new rules and a number of rules collected and adapted
-from various RFCs {{-http}} {{-mediatype-reg}} {{-abnf}} {{?RFC8866}}.
+from various RFCs {{-http-new}} {{-mediatype-reg}} {{-abnf}} {{?RFC8866}}.
 
 ~~~~ abnf
 ; New in this document
@@ -283,8 +306,10 @@ Content-Format-Spec = Content-Format-Number / Content-Format-String
 Content-Format-Number = "0" / (POS-DIGIT *DIGIT)
 Content-Format-String   = Content-Type *("@" Content-Coding)
 
-; Cleaned up from RFC 7231, only leaving SP as blank space, and
-; removing legacy 8-bit characters:
+; Cleaned up from [RFC-httpbis-semantics],
+; leaving only SP as blank space,
+; removing legacy 8-bit characters, and
+; leaving the parameter as mandatory:
 
 Content-Type   = Media-Type-Name *( *SP ";" *SP parameter )
 parameter      = token "=" ( token / quoted-string )
@@ -293,10 +318,11 @@ token          = 1*tchar
 tchar          = "!" / "#" / "$" / "%" / "&" / "'" / "*"
                / "+" / "-" / "." / "^" / "_" / "`" / "|" / "~"
                / DIGIT / ALPHA
-quoted-string  = %x22 *qdtext %x22
+quoted-string  = %x22 *( qdtext / quoted-pair ) %x22
 qdtext         = SP / %x21 / %x23-5B / %x5D-7E
+quoted-pair    = "\" ( SP / VCHAR )
 
-; Adapted from section 3.1.2.1 of RFC 7231
+; Adapted from section 8.4.1 of [RFC-httpbis-semantics]
 
 Content-Coding   = token
 
@@ -325,9 +351,15 @@ DIGIT     =  %x30-39           ; 0 – 9
 POS-DIGIT =  %x31-39           ; 1 – 9
 ALPHA     =  %x41-5A / %x61-7A ; A – Z / a – z
 SP        =  %x20
+VCHAR     =  %x21-7E           ; printable ASCII (no SP)
 
 ~~~~
 {: #content-format-spec title="ABNF syntax of Content-Format-Spec"}
+
+[^replace]
+
+[^replace]: RFC editor: Please replace \[RFC-httpbis-semantics] by what gets
+            published from {{-http-new}}.
 
 # Security Considerations {#seccons}
 
