@@ -133,10 +133,10 @@ with CBOR diagnostic notation in {{ex-2-cbor}}.
 ## Evolution
 
 As with SenML in general, there is no expectation that the creator of
-a SenML pack knows (or has negotiated with) the consumer of that pack,
+a SenML pack knows (or has negotiated with) each consumer of that pack,
 which may be very remote in space and particularly in time.
-This means that the SenML creator has no way to know whether the
-consumer knows:
+This means that the SenML creator in general has no way to know
+whether the consumer knows:
 
 - each specific media-type name used
 - each parameter and each parameter value used
