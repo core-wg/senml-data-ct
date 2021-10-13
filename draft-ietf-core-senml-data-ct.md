@@ -138,10 +138,10 @@ which may be very remote in space and particularly in time.
 This means that the SenML creator in general has no way to know
 whether the consumer knows:
 
-- each specific media-type name used
+- each specific media-type-name used
 - each parameter and each parameter value used
-- each content-coding in use
-- each content-format number in use for a combination of these
+- each content coding in use
+- each Content-Format number in use for a combination of these
 
 What SenML, as well as the new fields defined here, guarantees is that
 a recipient implementation *knows* when it needs to be updated to
@@ -168,7 +168,7 @@ Media-Type-Name:
 Content-Type:
 : A Media-Type-Name, optionally associated with parameters
   ({{Section 5 of -mime1}}, separated from
-  the media type name and from each other by a semicolon).
+  the Media-Type-Name and from each other by a semicolon).
   In HTTP and many other protocols, used in a `Content-Type` header field.
 
 content coding:
