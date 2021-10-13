@@ -309,7 +309,7 @@ Content-Format-String   = Content-Type *("@" Content-Coding)
 ; Cleaned up from [RFC-httpbis-semantics],
 ; leaving only SP as blank space,
 ; removing legacy 8-bit characters, and
-; leaving the parameter as mandatory:
+; leaving the parameter as mandatory with each semicolon:
 
 Content-Type   = Media-Type-Name *( *SP ";" *SP parameter )
 parameter      = token "=" ( token / quoted-string )
