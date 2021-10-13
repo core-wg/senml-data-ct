@@ -129,6 +129,27 @@ with CBOR diagnostic notation in {{ex-2-cbor}}.
 ~~~
 {: #ex-2-cbor title="Example Data Value in CBOR diagnostic notation"}
 
+## Evolution
+
+As with SenML in general, there is no expectation that the creator of
+a SenML pack knows (or has negotiated with) the consumer of that pack,
+which may be very remote in space and particularly in time.
+This means that the SenML creator has no way to know whether the
+consumer knows:
+
+- each specific media-type name used
+- each parameter and each parameter value used
+- each content-coding in use
+- each content-format number in use for a combination of these
+
+What SenML, as well as the new fields defined here, guarantees is that
+a recipient implementation *knows* when it needs to be updated to
+understand these field values and the values controlled by them;
+registries are used to evolve these name spaces in a controlled way.
+SenML packs can be processed by a consumer while not understanding all
+the information in them, and information can generally be preserved in
+this processing such that it is useful for further consumers.
+
 # Terminology
 
 {::boilerplate bcp14-tagged}
